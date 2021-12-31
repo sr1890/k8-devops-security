@@ -3,4 +3,4 @@
 ## Talisman hooks 
 ## PIT mutation
 ## SonarQube
-  # Quality Gates
+  ### Quality Gates
