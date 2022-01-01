@@ -5,6 +5,8 @@
 ## SonarQube
 ## Quality Gates
 ## Dependency Check
+
+## Trivy 
   
   
   
