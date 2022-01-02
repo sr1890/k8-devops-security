@@ -1,11 +1,21 @@
 pipeline {
   agent any
 
+  environment {
+    deploymentName = "devsecops"
+    containerName = "devsecops-container"
+    serviceName = "devsecops-svc"
+    imageName = "santoshray/numeric-app:${GIT_COMMIT}"
+    applicationURL = "http://devsecops-demo.eastus.cloudapp.azure.com/"
+    applicationURI = "/increment/99"
+  }
+
+
   stages {
 
     stage('Build Artifact - Maven') {
       steps {
-        sh "mvn clean package -DskipTests=true" // removed comments
+        sh "mvn clean package -DskipTests=true"
         archive 'target/*.jar'
       }
     }
@@ -80,14 +90,32 @@ pipeline {
       }
     }
 
-    stage('Kubernetes Deployment - DEV') {
+    // stage('Kubernetes Deployment - DEV') {
+    //   steps {
+    //     withKubeConfig([credentialsId: 'kubeconfig']) {
+    //       sh "sed -i 's#replace#santoshray/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+    //       sh "kubectl apply -f k8s_deployment_service.yaml"
+    //     }
+    //   }
+    // }
+
+    stage('K8S Deployment - DEV') {
       steps {
-        withKubeConfig([credentialsId: 'kubeconfig']) {
-          sh "sed -i 's#replace#santoshray/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
-          sh "kubectl apply -f k8s_deployment_service.yaml"
-        }
+        parallel(
+          "Deployment": {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "bash k8s-deployment.sh"
+            }
+          },
+          "Rollout Status": {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "bash k8s-deployment-rollout-status.sh"
+            }
+          }
+        )
       }
     }
+
   }
 post {
     always {
