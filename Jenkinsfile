@@ -11,6 +11,18 @@ pipeline {
   }
 
 
+pipeline {
+  agent any
+
+  environment {
+    deploymentName = "devsecops"
+    containerName = "devsecops-container"
+    serviceName = "devsecops-svc"
+    imageName = "santoshray/numeric-app:${GIT_COMMIT}"
+    applicationURL = "http://devsecops-demo.eastus.cloudapp.azure.com/"
+    applicationURI = "/increment/99"
+  }
+
   stages {
 
     stage('Build Artifact - Maven') {
@@ -20,25 +32,18 @@ pipeline {
       }
     }
 
-    stage('Unit Tests - JUnit and Jacoco') {
+    stage('Unit Tests - JUnit and JaCoCo') {
       steps {
         sh "mvn test"
       }
-      post {
-        always {
-          junit 'target/surefire-reports/*.xml'
-          jacoco execPattern: 'target/jacoco.exec'
-        }
-      }
     }
-    
+
     stage('Mutation Tests - PIT') {
       steps {
         sh "mvn org.pitest:pitest-maven:mutationCoverage"
       }
     }
 
- 
     stage('SonarQube - SAST') {
       steps {
         withSonarQubeEnv('SonarQube') {
@@ -75,7 +80,7 @@ pipeline {
           sh 'printenv'
           sh 'sudo docker build -t santoshray/numeric-app:""$GIT_COMMIT"" .'
           sh 'docker push santoshray/numeric-app:""$GIT_COMMIT""'
-         }
+        }
       }
     }
 
@@ -87,7 +92,7 @@ pipeline {
           },
           "Kubesec Scan": {
             sh "bash kubesec-scan.sh"
-          }
+          },
           "Trivy Scan": {
             sh "bash trivy-k8s-scan.sh"
           }
@@ -113,12 +118,13 @@ pipeline {
     }
 
   }
-post {
+
+  post {
     always {
       junit 'target/surefire-reports/*.xml'
       jacoco execPattern: 'target/jacoco.exec'
       pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-     // dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+      dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     }
 
     // success {
