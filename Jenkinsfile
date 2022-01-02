@@ -10,19 +10,6 @@ pipeline {
     applicationURI = "/increment/99"
   }
 
-
-pipeline {
-  agent any
-
-  environment {
-    deploymentName = "devsecops"
-    containerName = "devsecops-container"
-    serviceName = "devsecops-svc"
-    imageName = "santoshray/numeric-app:${GIT_COMMIT}"
-    applicationURL = "http://devsecops-demo.eastus.cloudapp.azure.com/"
-    applicationURI = "/increment/99"
-  }
-
   stages {
 
     stage('Build Artifact - Maven') {
