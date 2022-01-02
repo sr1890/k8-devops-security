@@ -5,10 +5,9 @@
 ## SonarQube
 ## Quality Gates
 ## Dependency Check
-
 ## Trivy 
-  
-  
+## OPA Conftest Docker
+## OPA Conftest K8
   
   
 ## Contributing
