@@ -1,3 +1,4 @@
+################### integration-test-PROD.sh ################### 
 
 #!/bin/bash
 sleep 5s
@@ -37,3 +38,4 @@ then
 else
         echo "The Service does not have a NodePort"
         exit 1;
+fi;
