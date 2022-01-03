@@ -12,6 +12,12 @@ OPA Conftest K8
 DAST/OWASP ZAP
 
 ```
+
+# K8S CIS Benchmark
+
+curl -L https://github.com/aquasecurity/kube-bench/releases/download/v0.3.1/kube-bench_0.3.1_linux_amd64.deb -o kube-bench_0.3.1_linux_amd64.deb
+
+sudo apt install ./kube-bench_0.3.1_linux_amd64.deb -f
   
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
