@@ -177,22 +177,22 @@ pipeline {
       }
     }
 
-    stage('Integration Tests - PROD') {
-      steps {
-        script {
-          try {
-            withKubeConfig([credentialsId: 'kubeconfig']) {
-              sh "bash integration-test-PROD.sh"
-            }
-          } catch (e) {
-            withKubeConfig([credentialsId: 'kubeconfig']) {
-              sh "kubectl -n prod rollout undo deploy ${deploymentName}"
-            }
-            throw e
-          }
-        }
-      }
-    }
+    // stage('Integration Tests - PROD') {
+    //   steps {
+    //     script {
+    //       try {
+    //         withKubeConfig([credentialsId: 'kubeconfig']) {
+    //           sh "bash integration-test-PROD.sh"
+    //         }
+    //       } catch (e) {
+    //         withKubeConfig([credentialsId: 'kubeconfig']) {
+    //           sh "kubectl -n prod rollout undo deploy ${deploymentName}"
+    //         }
+    //         throw e
+    //       }
+    //     }
+    //   }
+    // }
 
   }
 
