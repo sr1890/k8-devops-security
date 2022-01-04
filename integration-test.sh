@@ -3,10 +3,13 @@
 
 sleep 5s
 
-# PORT=$(kubectl -n default get svc ${serviceName} -o json | jq .spec.ports[].nodePort)
-PORT = 32264
+#PORT=$(kubectl -n default get svc ${serviceName} -o json | jq .spec.ports[].nodePort)
+
+PORT=$(kubectl -n default get svc ${serviceName} -o json | jq .spec.ports[].nodePort)
+
 echo $PORT
 echo $applicationURL:$PORT/$applicationURI
+
 
 if [[ ! -z "$PORT" ]];
 then
